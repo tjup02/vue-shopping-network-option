@@ -16,6 +16,7 @@ export default defineConfig([
   {
     languageOptions: {
       globals: {
+        process: 'readonly',
         ...globals.browser,
       },
     },
