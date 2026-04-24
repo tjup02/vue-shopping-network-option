@@ -1,0 +1,44 @@
+// ==============================================
+//        SCSS 引入外部套件（Bootstrap）寫法
+// ==============================================
+//bootstrap樣式引入要放在全域，<style lang="scss">不能加scoped
+//
+// ✔ 核心觀念：Sass 會解析 node_modules 套件路徑
+// ✔ 不同打包工具（Webpack / Vite）只是影響「額外 alias 行為」
+//
+// ----------------------------------------------
+// ❌ 舊寫法1（不建議）
+// ----------------------------------------------
+// 。手動指定 node_modules 路徑（可讀性差）
+// 。容易因專案結構變動而壞掉
+//@import "../node_modules/bootstrap/scss/bootstrap";
+
+// ----------------------------------------------
+// ❌ 舊寫法2（Webpack / Vue CLI 時代）
+// ----------------------------------------------
+// 。使用 ~ 作為 node_modules alias（webpack 提供）
+// 。Vite 已不再推薦
+//@import "~bootstrap/scss/bootstrap";
+
+// ----------------------------------------------
+// ✔ 現代寫法（Vite / Sass 標準方式）
+// ----------------------------------------------
+// 。Sass 會自動從 node_modules 解析套件
+// 。不需要寫路徑或 ~
+// @import 'bootstrap/scss/bootstrap';
+//
+//
+//
+//
+// =====================================
+// Bootstrap SCSS import(有一定的載入順序)
+// ======================================
+// functions  (工具箱（計算用）) => 提供 SCSS 工具函式（color / math / map）
+@import 'bootstrap/scss/functions';
+// variables  (設定總表（顏色、間距、字體）) => Bootstrap 所有核心變數
+// 這裡載入的是我們複製到assets/scss/helpers的檔案
+@import './helpers/variables';
+// mixins  (樣式生成工具)  => SCSS 可重用函式（media query / button generator）
+@import 'bootstrap/scss/mixins';
+// 把所有東西「組裝成完整 Bootstrap」(放最後)
+@import 'bootstrap/scss/bootstrap';

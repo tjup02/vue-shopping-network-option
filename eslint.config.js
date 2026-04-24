@@ -16,7 +16,8 @@ export default defineConfig([
   {
     languageOptions: {
       globals: {
-        process: 'readonly',
+        // process: 'readonly',
+        // __dirname: 'readonly',
         ...globals.browser,
       },
     },
@@ -28,4 +29,13 @@ export default defineConfig([
   ...pluginOxlint.buildFromOxlintConfigFile('.oxlintrc.json'),
 
   skipFormatting,
+
+  {
+    files: ['vite.config.js'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+    },
+  },
 ])
