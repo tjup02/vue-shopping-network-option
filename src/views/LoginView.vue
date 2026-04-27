@@ -100,6 +100,11 @@ export default {
         //          前端較少直接用 document.cookie 儲存登入 token。
         //          這裡是課程用來介紹document.cookie的功用
         document.cookie = `hexToken=${token};Expires=${new Date(expired)}`
+
+        // 判斷登入成功，轉跳頁面
+        if (res.data.success) {
+          this.$router.push({ name: 'dashboard' })
+        }
       } catch (error) {
         console.log(error.response)
       }
