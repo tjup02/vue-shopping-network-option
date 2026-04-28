@@ -9,7 +9,7 @@
 
 <script>
 import { RouterView } from 'vue-router'
-import NavBar from './components/Navbar.vue'
+import NavBar from './components/NavBar.vue'
 
 export default {
   components: { RouterView, NavBar },

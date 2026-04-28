@@ -1,4 +1,11 @@
 <template>
+  <div class="text-end">
+    <!-- @click="$refs.productModal.showModal()" -->
+    <!--   點擊後透過 $refs 取得子元件實例，呼叫子元件內的 showModal() 方法 -->
+    <button @click="$refs.productModal.showModal()" type="button" class="btn btn-primary">
+      新增產品
+    </button>
+  </div>
   <table class="table mt-4">
     <thead>
       <tr>
@@ -29,10 +36,12 @@
       </tr>
     </tbody>
   </table>
+  <ProductModal ref="productModal"></ProductModal>
 </template>
 
 <script>
 import axios from 'axios'
+import ProductModal from '@/components/ProductModal.vue'
 
 export default {
   data() {
@@ -41,6 +50,7 @@ export default {
       pagination: {},
     }
   },
+  components: { ProductModal },
   created() {
     this.getProducts()
   },
