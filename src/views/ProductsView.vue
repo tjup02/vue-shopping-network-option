@@ -1,10 +1,6 @@
 <template>
   <div class="text-end">
-    <!-- @click="$refs.productModal.showModal()" -->
-    <!--   點擊後透過 $refs 取得子元件實例，呼叫子元件內的 showModal() 方法 -->
-    <button @click="$refs.productModal.showModal()" type="button" class="btn btn-primary">
-      新增產品
-    </button>
+    <button @click="openModal()" type="button" class="btn btn-primary">新增產品</button>
   </div>
   <table class="table mt-4">
     <thead>
@@ -36,7 +32,12 @@
       </tr>
     </tbody>
   </table>
-  <ProductModal ref="productModal"></ProductModal>
+  <!-- :product="tempProduct" 將表單填寫的資料傳入子元件 -->
+  <ProductModal
+    ref="productModal"
+    :product="tempProduct"
+    @update-product="updateProduct"
+  ></ProductModal>
 </template>
 
 <script>
@@ -48,6 +49,7 @@ export default {
     return {
       products: [],
       pagination: {},
+      tempProduct: {},
     }
   },
   components: { ProductModal },
@@ -55,6 +57,7 @@ export default {
     this.getProducts()
   },
   methods: {
+    // 接收總商品資料API
     async getProducts() {
       const api = `${import.meta.env.VITE_API}api/${import.meta.env.VITE_PATH}/admin/products`
       try {
@@ -63,6 +66,29 @@ export default {
           this.products = res.data.products
           this.pagination = res.data.pagination
         }
+      } catch (error) {
+        console.log(error.response)
+      }
+    },
+    openModal() {
+      // 每次打開modal，都清空暫存資料(表單清空)
+      this.tempProduct = {}
+      const productComponent = this.$refs.productModal
+      productComponent.showModal()
+    },
+    async updateProduct(item) {
+      // 將emit的資料覆蓋到暫存
+      this.tempProduct = item
+      const productComponent = this.$refs.productModal
+      //   送出商品資料API
+      const api = `${import.meta.env.VITE_API}api/${import.meta.env.VITE_PATH}/admin/product`
+      try {
+        const res = await axios.post(api, { data: this.tempProduct })
+        console.log(res)
+        // 關掉modal
+        productComponent.hideModal()
+        // 接收總商品資料API
+        this.getProducts()
       } catch (error) {
         console.log(error.response)
       }
