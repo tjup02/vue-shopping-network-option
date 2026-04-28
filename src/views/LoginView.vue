@@ -103,7 +103,7 @@ export default {
 
         // 判斷登入成功，轉跳頁面
         if (res.data.success) {
-          this.$router.push({ name: 'dashboard' })
+          this.$router.push({ name: 'products' })
         }
       } catch (error) {
         console.log(error.response)
