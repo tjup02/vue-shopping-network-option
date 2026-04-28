@@ -1,5 +1,5 @@
 <template>
-  <div class="">Dashboard登入成功</div>
+  <RouterView />
 </template>
 
 <script>
