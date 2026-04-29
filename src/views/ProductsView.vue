@@ -1,6 +1,6 @@
 <template>
   <div class="text-end">
-    <button @click="openModal()" type="button" class="btn btn-primary">新增產品</button>
+    <button @click="openModal(true)" type="button" class="btn btn-primary">新增產品</button>
   </div>
   <table class="table mt-4">
     <thead>
@@ -25,7 +25,9 @@
         </td>
         <td>
           <div class="btn-group">
-            <button class="btn btn-outline-primary btn-sm">編輯</button>
+            <button @click="openModal(false, item)" class="btn btn-outline-primary btn-sm">
+              編輯
+            </button>
             <button class="btn btn-outline-danger btn-sm">刪除</button>
           </div>
         </td>
@@ -50,6 +52,7 @@ export default {
       products: [],
       pagination: {},
       tempProduct: {},
+      isNew: false, //用來判斷是編輯(false)還是新增(true)
     }
   },
   components: { ProductModal },
@@ -57,9 +60,11 @@ export default {
     this.getProducts()
   },
   methods: {
-    // 接收總商品資料API
+    // 抓取產品總資料
     async getProducts() {
+      // 新增
       const api = `${import.meta.env.VITE_API}api/${import.meta.env.VITE_PATH}/admin/products`
+
       try {
         const res = await axios.get(api)
         if (res.data.success) {
@@ -70,24 +75,39 @@ export default {
         console.log(error.response)
       }
     },
-    openModal() {
+    openModal(isNew, item) {
       // 每次打開modal，都清空暫存資料(表單清空)
-      this.tempProduct = {}
+      if (isNew) {
+        // 如果是新增功能，清空表單
+        this.tempProduct = {}
+      } else {
+        // 如果是編輯功能，將該資料帶入暫存資料
+        this.tempProduct = { ...item }
+      }
+      //將 this.isNew狀態與傳進來的isNew統一
+      this.isNew = isNew
       const productComponent = this.$refs.productModal
       productComponent.showModal()
     },
+    // emit 動作
     async updateProduct(item) {
       // 將emit的資料覆蓋到暫存
       this.tempProduct = item
       const productComponent = this.$refs.productModal
-      //   送出商品資料API
-      const api = `${import.meta.env.VITE_API}api/${import.meta.env.VITE_PATH}/admin/product`
+      // 新增產品
+      let api = `${import.meta.env.VITE_API}api/${import.meta.env.VITE_PATH}/admin/product`
+      let httpMethods = 'post'
+
+      // 編輯產品
+      if (!this.isNew) {
+        api = `${import.meta.env.VITE_API}api/${import.meta.env.VITE_PATH}/admin/product/${item.id}`
+        httpMethods = 'put'
+      }
       try {
-        const res = await axios.post(api, { data: this.tempProduct })
+        const res = await axios[httpMethods](api, { data: this.tempProduct })
         console.log(res)
         // 關掉modal
         productComponent.hideModal()
-        // 接收總商品資料API
         this.getProducts()
       } catch (error) {
         console.log(error.response)
