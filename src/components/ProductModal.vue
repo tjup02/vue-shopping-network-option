@@ -40,7 +40,13 @@
                   >或 上傳圖片
                   <i class="fas fa-spinner fa-spin"></i>
                 </label>
-                <input type="file" id="customFile" class="form-control" />
+                <input
+                  @change="uploadFile"
+                  type="file"
+                  id="customFile"
+                  class="form-control"
+                  ref="fileInput"
+                />
               </div>
               <img :src="tempProduct.imageUrl" class="img-fluid" alt="" />
               <!-- 延伸技巧，多圖 -->
@@ -173,6 +179,7 @@
 
 <script>
 import Modal from 'bootstrap/js/dist/modal'
+import axios from 'axios'
 
 export default {
   data() {
@@ -209,6 +216,29 @@ export default {
     },
     hideModal() {
       this.modal.hide()
+    },
+    // 圖片上傳動作
+    async uploadFile() {
+      // 取得上傳資料
+      const uploadedFile = this.$refs.fileInput.files[0]
+      // console.dir(uploadedFile)
+
+      // 建立一個「表單資料容器」，用來裝 檔案或資料，準備送到後端。
+      //  。 new FormData()會轉換成formData格式(multipart/form-data)
+      const formData = new FormData()
+      // 建立欄位:'file-to-upload'是API提供的名字，要看API說明
+      formData.append('file-to-upload', uploadedFile)
+
+      const api = `${import.meta.env.VITE_API}api/${import.meta.env.VITE_PATH}/admin/upload`
+      try {
+        const res = await axios.post(api, formData)
+        if (res.data.success) {
+          // 將上傳的圖片路徑寫入this.tempProduct.imageUrl
+          this.tempProduct.imageUrl = res.data.imageUrl
+        }
+      } catch (error) {
+        console.log(error.response)
+      }
     },
   },
 }
