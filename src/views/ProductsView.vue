@@ -28,7 +28,7 @@
             <button @click="openModal(false, item)" class="btn btn-outline-primary btn-sm">
               編輯
             </button>
-            <button class="btn btn-outline-danger btn-sm">刪除</button>
+            <button @click="openDelModal(item)" class="btn btn-outline-danger btn-sm">刪除</button>
           </div>
         </td>
       </tr>
@@ -40,22 +40,24 @@
     :product="tempProduct"
     @update-product="updateProduct"
   ></ProductModal>
+  <DelModal ref="delModal" :product="tempProduct" @del-item="delProduct"></DelModal>
 </template>
 
 <script>
 import axios from 'axios'
 import ProductModal from '@/components/ProductModal.vue'
+import DelModal from '@/components/DelModal.vue'
 
 export default {
   data() {
     return {
-      products: [],
+      products: [], //產品總表
       pagination: {},
-      tempProduct: {},
+      tempProduct: {}, //用來存取目前選取的資料
       isNew: false, //用來判斷是編輯(false)還是新增(true)
     }
   },
-  components: { ProductModal },
+  components: { ProductModal, DelModal },
   created() {
     this.getProducts()
   },
@@ -109,6 +111,29 @@ export default {
         // 關掉modal
         productComponent.hideModal()
         this.getProducts()
+      } catch (error) {
+        console.log(error.response)
+      }
+    },
+    // 打開刪除Modal動作
+    openDelModal(item) {
+      this.tempProduct = item
+      const delComponent = this.$refs.delModal
+      delComponent.showModal()
+      console.log(this.tempProduct)
+    },
+
+    // 刪除產品
+    async delProduct(id) {
+      const api = `${import.meta.env.VITE_API}api/${import.meta.env.VITE_PATH}/admin/product/${id}`
+
+      try {
+        const res = await axios.delete(api)
+        if (res.data.success) {
+          this.getProducts()
+          const delComponent = this.$refs.delModal
+          delComponent.hideModal()
+        }
       } catch (error) {
         console.log(error.response)
       }
