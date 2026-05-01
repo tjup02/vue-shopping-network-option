@@ -1,4 +1,6 @@
 <template>
+  <!-- loading -->
+  <LoadingOverlay :active="isLoading"></LoadingOverlay>
   <!-- Modal -->
   <div
     class="modal fade"
@@ -187,6 +189,7 @@ export default {
       // Bootstrap Modal 實例（用來控制開關）
       modal: {},
       tempProduct: {},
+      isLoading: false, //是否loading
     }
   },
   props: {
@@ -221,6 +224,8 @@ export default {
       formData.append('file-to-upload', uploadedFile)
 
       const api = `${import.meta.env.VITE_API}api/${import.meta.env.VITE_PATH}/admin/upload`
+
+      this.isLoading = true
       try {
         const res = await axios.post(api, formData)
         if (res.data.success) {
@@ -229,6 +234,8 @@ export default {
         }
       } catch (error) {
         console.log(error.response)
+      } finally {
+        this.isLoading = false
       }
     },
   },

@@ -1,4 +1,6 @@
 <template>
+  <!-- loading -->
+  <LoadingOverlay :active="isLoading"></LoadingOverlay>
   <div class="text-end">
     <button @click="openModal(true)" type="button" class="btn btn-primary">新增產品</button>
   </div>
@@ -55,6 +57,7 @@ export default {
       pagination: {},
       tempProduct: {}, //用來存取目前選取的資料
       isNew: false, //用來判斷是編輯(false)還是新增(true)
+      isLoading: false,
     }
   },
   components: { ProductModal, DelModal },
@@ -66,7 +69,7 @@ export default {
     async getProducts() {
       // 新增
       const api = `${import.meta.env.VITE_API}api/${import.meta.env.VITE_PATH}/admin/products`
-
+      this.isLoading = true
       try {
         const res = await axios.get(api)
         if (res.data.success) {
@@ -75,6 +78,8 @@ export default {
         }
       } catch (error) {
         console.log(error.response)
+      } finally {
+        this.isLoading = false
       }
     },
     openModal(isNew, item) {
@@ -96,10 +101,10 @@ export default {
       // 將emit的資料覆蓋到暫存
       this.tempProduct = item
       const productComponent = this.$refs.productModal
+      this.isLoading = true
       // 新增產品
       let api = `${import.meta.env.VITE_API}api/${import.meta.env.VITE_PATH}/admin/product`
       let httpMethods = 'post'
-
       // 編輯產品
       if (!this.isNew) {
         api = `${import.meta.env.VITE_API}api/${import.meta.env.VITE_PATH}/admin/product/${item.id}`
@@ -113,6 +118,8 @@ export default {
         this.getProducts()
       } catch (error) {
         console.log(error.response)
+      } finally {
+        this.isLoading = false
       }
     },
     // 打開刪除Modal動作
@@ -126,16 +133,18 @@ export default {
     // 刪除產品
     async delProduct(id) {
       const api = `${import.meta.env.VITE_API}api/${import.meta.env.VITE_PATH}/admin/product/${id}`
-
+      this.isLoading = true
       try {
         const res = await axios.delete(api)
         if (res.data.success) {
-          this.getProducts()
           const delComponent = this.$refs.delModal
           delComponent.hideModal()
+          this.getProducts()
         }
       } catch (error) {
         console.log(error.response)
+      } finally {
+        this.isLoading = false
       }
     },
   },
