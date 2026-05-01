@@ -178,8 +178,8 @@
 </template>
 
 <script>
-import Modal from 'bootstrap/js/dist/modal'
 import axios from 'axios'
+import modalMixin from '@/mixins/modalMixin'
 
 export default {
   data() {
@@ -200,10 +200,7 @@ export default {
       },
     },
   },
-  mounted() {
-    // 將 DOM（this.$refs.modal）轉成 Bootstrap Modal 實例
-    this.modal = new Modal(this.$refs.modal)
-  },
+  mixins: [modalMixin],
   watch: {
     // 監聽product(props)，每次父元件傳資料進來，將暫存資料覆蓋
     product() {
@@ -211,12 +208,6 @@ export default {
     },
   },
   methods: {
-    showModal() {
-      this.modal.show()
-    },
-    hideModal() {
-      this.modal.hide()
-    },
     // 圖片上傳動作
     async uploadFile() {
       // 取得上傳資料
