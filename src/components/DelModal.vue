@@ -41,12 +41,6 @@
 import modalMixin from '@/mixins/modalMixin'
 
 export default {
-  data() {
-    return {
-      // Bootstrap Modal 實例（用來控制開關）
-      modal: {},
-    }
-  },
   props: {
     // 用來接收表單寫入的資料
     product: {

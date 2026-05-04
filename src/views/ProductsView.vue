@@ -36,6 +36,7 @@
       </tr>
     </tbody>
   </table>
+
   <!-- :product="tempProduct" 將表單填寫的資料傳入子元件 -->
   <ProductModal
     ref="productModal"
@@ -60,6 +61,9 @@ export default {
       isLoading: false,
     }
   },
+  // 收到祖元件傳遞過來的資料emitter，讓toastMessage可以使用emitter套件
+  inject: ['emitter'],
+  emits: ['update-product'],
   components: { ProductModal, DelModal },
   created() {
     this.getProducts()
@@ -105,6 +109,7 @@ export default {
       // 新增產品
       let api = `${import.meta.env.VITE_API}api/${import.meta.env.VITE_PATH}/admin/product`
       let httpMethods = 'post'
+
       // 編輯產品
       if (!this.isNew) {
         api = `${import.meta.env.VITE_API}api/${import.meta.env.VITE_PATH}/admin/product/${item.id}`
@@ -116,8 +121,29 @@ export default {
         // 關掉modal
         productComponent.hideModal()
         this.getProducts()
+        // 如果更新成功，toast元件內容:
+        if (httpMethods === 'put') {
+          this.emitter.emit('push-message', {
+            style: 'success',
+            title: '更新成功',
+            content: `成功更新${item.title}`,
+          })
+          // 如果新增成功，toast元件內容:
+        } else {
+          this.emitter.emit('push-message', {
+            style: 'primary',
+            title: '新增成功',
+          })
+        }
       } catch (error) {
         console.log(error.response)
+        // 如果執行失敗，toast元件內容:
+        this.emitter.emit('push-message', {
+          style: 'danger',
+          title: '更新失敗',
+          content: error.response.data.message,
+          // { "success": false, "message": "您所查看的API不存在 >_<" }
+        })
       } finally {
         this.isLoading = false
       }
@@ -140,9 +166,18 @@ export default {
           const delComponent = this.$refs.delModal
           delComponent.hideModal()
           this.getProducts()
+          this.emitter.emit('push-message', {
+            style: 'success',
+            title: '刪除成功',
+          })
         }
       } catch (error) {
         console.log(error.response)
+        this.emitter.emit('push-message', {
+          style: 'danger',
+          title: '刪除失敗',
+          content: error.response.data.message,
+        })
       } finally {
         this.isLoading = false
       }

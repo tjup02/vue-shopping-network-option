@@ -1,10 +1,22 @@
 <template>
-  <RouterView />
+  <div class="container-fluid mt-3 position-relative">
+    <ToastMessage></ToastMessage>
+    <RouterView />
+  </div>
 </template>
 
 <script>
 import axios from 'axios'
+//  引入全域唯一的 mitt emitter（事件中心）
+import emitter from '@/methods/emitter.js'
+import ToastMessage from '@/components/ToastMessage.vue'
 export default {
+  components: { ToastMessage },
+  // 透過 provide 將 emitter 注入到子孫元件
+  // 讓深層元件可以用 inject 取得 emitter 進行事件溝通（避免層層 props 傳遞）
+  provide() {
+    return { emitter }
+  },
   created() {
     // 取token (loginView.vue有設定自命名hexToken)
     const token = document.cookie.replace(/(?:(?:^|.*;\s*)hexToken\s*\=\s*([^;]*).*$)|^.*$/, '$1')
@@ -14,6 +26,7 @@ export default {
     // 執行 檢查是否登入的api
     this.checkSignIn()
   },
+
   methods: {
     // 檢查是否登入的api
     async checkSignIn() {
