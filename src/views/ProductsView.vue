@@ -36,7 +36,8 @@
       </tr>
     </tbody>
   </table>
-
+  <!-- @emit-pages="getProducts"  將子元件欲切換的頁碼資訊傳過來 -->
+  <PaginationView :pages="pagination" @emit-pages="getProducts"></PaginationView>
   <!-- :product="tempProduct" 將表單填寫的資料傳入子元件 -->
   <ProductModal
     ref="productModal"
@@ -47,6 +48,7 @@
 </template>
 
 <script>
+import PaginationView from '@/components/PaginationView.vue'
 import axios from 'axios'
 import ProductModal from '@/components/ProductModal.vue'
 import DelModal from '@/components/DelModal.vue'
@@ -64,21 +66,23 @@ export default {
   // 收到祖元件傳遞過來的資料emitter，讓toastMessage可以使用emitter套件
   inject: ['emitter'],
   emits: ['update-product'],
-  components: { ProductModal, DelModal },
+  components: { ProductModal, DelModal, PaginationView },
   created() {
     this.getProducts()
   },
   methods: {
     // 抓取產品總資料
-    async getProducts() {
-      // 新增
-      const api = `${import.meta.env.VITE_API}api/${import.meta.env.VITE_PATH}/admin/products`
+    // 。預設參數page在第一頁
+    async getProducts(page = 1) {
+      // 接api取商品總資料去渲染畫面
+      const api = `${import.meta.env.VITE_API}api/${import.meta.env.VITE_PATH}/admin/products/?page=${page}`
       this.isLoading = true
       try {
         const res = await axios.get(api)
         if (res.data.success) {
           this.products = res.data.products
           this.pagination = res.data.pagination
+          console.log(res.data)
         }
       } catch (error) {
         console.log(error.response)
