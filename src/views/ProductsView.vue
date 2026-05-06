@@ -19,8 +19,8 @@
       <tr v-for="item in products" :key="item.id">
         <td>{{ item.category }}</td>
         <td>{{ item.title }}</td>
-        <td class="text-right">{{ item.origin_price }}</td>
-        <td class="text-right">{{ item.price }}</td>
+        <td class="text-right">{{ $filters.currency(item.origin_price) }}</td>
+        <td class="text-right">{{ $filters.currency(item.price) }}</td>
         <td>
           <span v-if="item.is_enabled" class="text-success">啟用</span>
           <span v-else class="text-muted">不啟用</span>
@@ -82,7 +82,7 @@ export default {
         if (res.data.success) {
           this.products = res.data.products
           this.pagination = res.data.pagination
-          console.log(res.data)
+          // console.log(res.data)
         }
       } catch (error) {
         console.log(error.response)
