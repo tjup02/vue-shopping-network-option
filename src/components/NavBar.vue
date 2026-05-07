@@ -19,13 +19,15 @@
             <a class="nav-link active" aria-current="page" href="#">Home</a>
           </li>
           <li class="nav-item">
-            <RouterLink class="nav-link" :to="{ name: 'products' }">product</RouterLink>
+            <RouterLink class="nav-link" :to="{ name: 'products' }">產品</RouterLink>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#" @click="logout">登出</a>
+            <RouterLink class="nav-link" :to="{ name: 'orders' }">訂單</RouterLink>
           </li>
         </ul>
-        <span class="navbar-text"> Navbar text with an inline element </span>
+        <span class="navbar-text"
+          ><a class="nav-link" href="#" @click.prevent="logout">登出</a></span
+        >
       </div>
     </div>
   </nav>

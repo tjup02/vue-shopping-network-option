@@ -52,6 +52,7 @@ import PaginationView from '@/components/PaginationView.vue'
 import axios from 'axios'
 import ProductModal from '@/components/ProductModal.vue'
 import DelModal from '@/components/DelModal.vue'
+import pushMessageState from '@/methods/pushMessageState.js'
 
 export default {
   data() {
@@ -125,29 +126,11 @@ export default {
         // 關掉modal
         productComponent.hideModal()
         this.getProducts()
-        // 如果更新成功，toast元件內容:
-        if (httpMethods === 'put') {
-          this.emitter.emit('push-message', {
-            style: 'success',
-            title: '更新成功',
-            content: `成功更新${item.title}`,
-          })
-          // 如果新增成功，toast元件內容:
-        } else {
-          this.emitter.emit('push-message', {
-            style: 'primary',
-            title: '新增成功',
-          })
-        }
+        // 如果執行失敗，toast元件內容
+        pushMessageState(res, this.isNew ? '新增' : '更新')
       } catch (error) {
-        console.log(error.response)
-        // 如果執行失敗，toast元件內容:
-        this.emitter.emit('push-message', {
-          style: 'danger',
-          title: '更新失敗',
-          content: error.response.data.message,
-          // { "success": false, "message": "您所查看的API不存在 >_<" }
-        })
+        // 如果執行失敗，toast元件內容
+        pushMessageState(error.response, this.isNew ? '新增' : '更新')
       } finally {
         this.isLoading = false
       }
@@ -170,18 +153,11 @@ export default {
           const delComponent = this.$refs.delModal
           delComponent.hideModal()
           this.getProducts()
-          this.emitter.emit('push-message', {
-            style: 'success',
-            title: '刪除成功',
-          })
+
+          pushMessageState(res, '刪除')
         }
       } catch (error) {
-        console.log(error.response)
-        this.emitter.emit('push-message', {
-          style: 'danger',
-          title: '刪除失敗',
-          content: error.response.data.message,
-        })
+        pushMessageState(error.response, '刪除')
       } finally {
         this.isLoading = false
       }
