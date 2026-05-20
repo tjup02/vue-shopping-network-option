@@ -2,6 +2,7 @@ import './assets/main.css'
 // vue3-loading-overlay 在npm的範例上，路徑有誤，要改成以下
 import Loading from 'vue3-loading-overlay'
 import 'vue3-loading-overlay/dist/vue3-loading-overlay.css'
+import 'bootstrap-icons/font/bootstrap-icons.css'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 // import axios from 'axios'
