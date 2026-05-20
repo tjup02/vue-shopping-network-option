@@ -1,4 +1,7 @@
 <template>
+  <header>
+    <NavBar></NavBar>
+  </header>
   <div class="container-fluid mt-3 position-relative">
     <ToastMessage></ToastMessage>
     <RouterView />
@@ -9,9 +12,10 @@
 import axios from 'axios'
 //  引入全域唯一的 mitt emitter（事件中心）
 import emitter from '@/methods/emitter.js'
+import NavBar from '@/components/NavBar.vue'
 import ToastMessage from '@/components/ToastMessage.vue'
 export default {
-  components: { ToastMessage },
+  components: { ToastMessage, NavBar },
   // 透過 provide 將 emitter 注入到子孫元件
   // 讓深層元件可以用 inject 取得 emitter 進行事件溝通（避免層層 props 傳遞）
   provide() {

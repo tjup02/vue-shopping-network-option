@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">Navbar w/ text</a>
+      <a class="navbar-brand" href="#">購物網站</a>
       <button
         class="navbar-toggler"
         type="button"
@@ -19,14 +19,16 @@
             <a class="nav-link active" aria-current="page" href="#">Home</a>
           </li>
           <li class="nav-item">
-            <RouterLink class="nav-link" :to="{ name: 'products' }">產品</RouterLink>
+            <RouterLink class="nav-link" :to="{ name: 'products' }">產品(控制台)</RouterLink>
           </li>
           <li class="nav-item">
-            <RouterLink class="nav-link" :to="{ name: 'orders' }">訂單</RouterLink>
+            <RouterLink class="nav-link" :to="{ name: 'orders' }">訂單(控制台)</RouterLink>
           </li>
         </ul>
-        <span class="navbar-text"
-          ><a class="nav-link" href="#" @click.prevent="logout">登出</a></span
+        <span class="navbar-text d-flex">
+          <RouterLink class="nav-link me-3" :to="{ name: 'userCart' }">產品選購區</RouterLink>
+          <!-- <RouterLink class="nav-link me-3" :to="{ name: 'userCart' }">購物車</RouterLink> -->
+          <a class="nav-link" href="#" @click.prevent="logout">登出</a></span
         >
       </div>
     </div>

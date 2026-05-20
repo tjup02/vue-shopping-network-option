@@ -11,8 +11,8 @@
       </tr>
     </thead>
     <tbody>
-      <!-- <template v-for="(item, key) in orders" :key="key">
-        <tr v-if="orders.length" :class="{'text-secondary': !item.is_paid}">
+      <template v-for="(item, key) in orders" :key="key">
+        <tr v-if="orders.length" :class="{ 'text-secondary': !item.is_paid }">
           <td>{{ $filters.date(item.create_at) }}</td>
           <td><span v-text="item.user.email" v-if="item.user"></span></td>
           <td>
@@ -50,7 +50,7 @@
             </div>
           </td>
         </tr>
-      </template> -->
+      </template>
     </tbody>
   </table>
 </template>
@@ -58,6 +58,9 @@
 <script>
 import axios from 'axios'
 export default {
+  data() {
+    return {}
+  },
   created() {
     this.getOrders()
   },
@@ -65,7 +68,7 @@ export default {
     async getOrders() {
       const url = `${import.meta.env.VITE_API}api/${import.meta.env.VITE_PATH}/admin/orders`
       try {
-        const res = axios.get(url)
+        const res = await axios.get(url)
         console.log(res.data)
       } catch (error) {
         console.log(error.response)

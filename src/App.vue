@@ -1,7 +1,4 @@
 <template>
-  <header>
-    <NavBar></NavBar>
-  </header>
   <div class="container-fluid">
     <RouterView />
   </div>
@@ -9,10 +6,9 @@
 
 <script>
 import { RouterView } from 'vue-router'
-import NavBar from './components/NavBar.vue'
 
 export default {
-  components: { RouterView, NavBar },
+  components: { RouterView },
 }
 </script>
 
