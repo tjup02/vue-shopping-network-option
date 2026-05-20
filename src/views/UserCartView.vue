@@ -37,7 +37,21 @@
                   >
                     查看更多
                   </button>
-                  <button type="button" class="btn btn-outline-danger">加到購物車</button>
+                  <button
+                    type="button"
+                    :disabled="this.status.loadingItem === item.id"
+                    class="btn btn-outline-danger"
+                    @click="addCart(item.id)"
+                  >
+                    <div
+                      v-if="this.status.loadingItem === item.id"
+                      class="spinner-grow spinner-grow-sm text-danger"
+                      role="status"
+                    >
+                      <span class="sr-only"></span>
+                    </div>
+                    加到購物車
+                  </button>
                 </div>
               </td>
             </tr>
@@ -60,9 +74,11 @@ export default {
     return {
       products: [], //產品總表
       pagination: {},
-      //   tempProduct: {}, //用來存取目前選取的資料
       isNew: false, //用來判斷是編輯(false)還是新增(true)
       isLoading: false,
+      status: {
+        loadingItem: '', //對應品項id
+      },
     }
   },
   //   emits: ['update-product'],
@@ -105,6 +121,25 @@ export default {
         console.log(error.response)
       } finally {
         this.isLoading = false
+      }
+    },
+
+    async addCart(id) {
+      const api = `${import.meta.env.VITE_API}api/${import.meta.env.VITE_PATH}/cart`
+      const cart = {
+        product_id: id,
+        qty: 1,
+      }
+      this.status.loadingItem = id
+
+      try {
+        const res = await axios.post(api, { data: cart })
+        if (res.data.success) {
+          // console.log(res)
+          this.status.loadingItem = ''
+        }
+      } catch (error) {
+        console.log(error.response)
       }
     },
   },
