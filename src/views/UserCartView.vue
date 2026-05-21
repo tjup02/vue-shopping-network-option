@@ -39,12 +39,12 @@
                   </button>
                   <button
                     type="button"
-                    :disabled="this.status.loadingItem === item.id"
+                    :disabled="status.loadingItem === item.id"
                     class="btn btn-outline-danger"
                     @click="addCart(item.id)"
                   >
                     <div
-                      v-if="this.status.loadingItem === item.id"
+                      v-if="status.loadingItem === item.id"
                       class="spinner-grow spinner-grow-sm text-danger"
                       role="status"
                     >
@@ -90,7 +90,15 @@
                   </td>
                   <td>
                     <div class="input-group input-group-sm">
-                      <input type="number" class="form-control" v-model.number="item.qty" />
+                      <!-- 數量輸入框 -->
+                      <input
+                        @change="updateCart(item.id, item.qty)"
+                        :disabled="status.loadingItem === item.id"
+                        type="number"
+                        min="0"
+                        class="form-control"
+                        v-model.number="item.qty"
+                      />
                       <div class="input-group-text">/ {{ item.product.unit }}</div>
                     </div>
                   </td>
@@ -230,6 +238,37 @@ export default {
         }
       } catch (error) {
         console.log(error.response)
+      }
+    },
+
+    async updateCart(id, qty) {
+      const api = `${import.meta.env.VITE_API}api/${import.meta.env.VITE_PATH}/cart/${id}`
+      const cart = { product_id: id, qty: qty }
+      this.status.loadingItem = id
+      try {
+        const res = await axios.put(api, { data: cart })
+        if (res.data.success) {
+          this.getCart()
+        }
+      } catch (error) {
+        console.log(error.response)
+      } finally {
+        this.status.loadingItem = ''
+      }
+    },
+
+    async removeCartItem(id) {
+      const api = `${import.meta.env.VITE_API}api/${import.meta.env.VITE_PATH}/cart/${id}`
+      this.status.loadingItem = id
+      try {
+        const res = await axios.delete(api, id)
+        if (res.data.success) {
+          this.getCart()
+        }
+      } catch (error) {
+        console.log(error.response)
+      } finally {
+        this.status.loadingItem = ''
       }
     },
   },
