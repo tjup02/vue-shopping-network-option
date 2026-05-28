@@ -162,6 +162,7 @@ export default {
     }
   },
   //   emits: ['update-product'],
+  inject: ['emitter', 'pushMessageState'],
   components: { PaginationView },
   created() {
     this.getProducts()
@@ -269,6 +270,27 @@ export default {
         console.log(error.response)
       } finally {
         this.status.loadingItem = ''
+      }
+    },
+
+    async addCouponCode() {
+      const api = `${import.meta.env.VITE_API}api/${import.meta.env.VITE_PATH}/coupon`
+      const coupon = { code: this.coupon_code }
+      this.isLoading = true
+
+      try {
+        const res = await axios.post(api, { data: coupon })
+        if (res.data.success) {
+          alert(res.data.message)
+        } else {
+          alert('查無優惠券')
+        }
+      } catch (error) {
+        console.log(error.response)
+        console.log(this.coupon_code)
+      } finally {
+        this.getCart()
+        this.isLoading = false
       }
     },
   },
