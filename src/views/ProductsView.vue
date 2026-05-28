@@ -44,7 +44,7 @@
     :product="tempProduct"
     @update-product="updateProduct"
   ></ProductModal>
-  <DelModal ref="delModal" :product="tempProduct" @del-item="delProduct"></DelModal>
+  <DelModal ref="delModal" :item="tempProduct" @del-item="delProduct"></DelModal>
 </template>
 
 <script>
@@ -52,7 +52,6 @@ import PaginationView from '@/components/PaginationView.vue'
 import axios from 'axios'
 import ProductModal from '@/components/ProductModal.vue'
 import DelModal from '@/components/DelModal.vue'
-import pushMessageState from '@/methods/pushMessageState.js'
 
 export default {
   data() {
@@ -65,7 +64,7 @@ export default {
     }
   },
   // 收到祖元件傳遞過來的資料emitter，讓toastMessage可以使用emitter套件
-  inject: ['emitter'],
+  inject: ['emitter', 'pushMessageState'],
   emits: ['update-product'],
   components: { ProductModal, DelModal, PaginationView },
   created() {
@@ -127,10 +126,10 @@ export default {
         productComponent.hideModal()
         this.getProducts()
         // 如果執行失敗，toast元件內容
-        pushMessageState(res, this.isNew ? '新增' : '更新')
+        this.pushMessageState(res, this.isNew ? '新增' : '更新')
       } catch (error) {
         // 如果執行失敗，toast元件內容
-        pushMessageState(error.response, this.isNew ? '新增' : '更新')
+        this.pushMessageState(error.response, this.isNew ? '新增' : '更新')
       } finally {
         this.isLoading = false
       }
@@ -154,10 +153,10 @@ export default {
           delComponent.hideModal()
           this.getProducts()
 
-          pushMessageState(res, '刪除')
+          this.pushMessageState(res, '刪除')
         }
       } catch (error) {
-        pushMessageState(error.response, '刪除')
+        this.pushMessageState(error.response, '刪除')
       } finally {
         this.isLoading = false
       }

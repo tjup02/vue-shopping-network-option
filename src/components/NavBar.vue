@@ -24,6 +24,9 @@
           <li class="nav-item">
             <RouterLink class="nav-link" :to="{ name: 'orders' }">訂單(控制台)</RouterLink>
           </li>
+          <li class="nav-item">
+            <RouterLink class="nav-link" :to="{ name: 'coupons' }">優惠券(控制台)</RouterLink>
+          </li>
         </ul>
         <span class="navbar-text d-flex">
           <RouterLink class="nav-link me-3" :to="{ name: 'userCart' }">產品選購區</RouterLink>

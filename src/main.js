@@ -9,7 +9,8 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 // 引入currency函式
-import { currency } from '@/methods/filters.js'
+import { currency, date } from '@/methods/filters.js'
+import pushMessageState from '@/methods/pushMessageState.js'
 const app = createApp(App)
 app.use(createPinia())
 app.use(router)
@@ -18,7 +19,10 @@ app.use(router)
 // - 要在建立app後才可使用(寫在這行之後const app = createApp(App))
 // - 命名加上$比較不會和區域變數產生衝突
 // - 全域屬性下的方法可以不用在該頁引入，可直接使用
-app.config.globalProperties.$filters = { currency }
+app.config.globalProperties.$filters = { currency, date }
+
+// 用provide的方式在全域引用pushMessageState
+app.provide('pushMessageState', pushMessageState)
 
 // vue3-loading-overlay元件 進行全域註冊
 app.component('LoadingOverlay', Loading)
