@@ -11,6 +11,26 @@ import router from './router'
 // 引入currency函式
 import { currency, date } from '@/methods/filters.js'
 import pushMessageState from '@/methods/pushMessageState.js'
+
+// vee-validate相關
+import { defineRule, configure, Form, Field, ErrorMessage } from 'vee-validate'
+import { all } from '@vee-validate/rules'
+import { localize, setLocale } from '@vee-validate/i18n'
+import zhTW from '@vee-validate/i18n/dist/locale/zh_TW.json'
+
+// vee-validate 註冊所有rule
+Object.entries(all).forEach(([name, rule]) => {
+  defineRule(name, rule)
+})
+
+// vee-validate i18n
+configure({
+  generateMessage: localize({ zh_TW: zhTW }), // 載入繁體中文語系
+  validateOnInput: true, // 當輸入任何內容直接進行驗證
+})
+// 設定預設語系
+setLocale('zh_TW')
+
 const app = createApp(App)
 app.use(createPinia())
 app.use(router)
@@ -26,4 +46,9 @@ app.provide('pushMessageState', pushMessageState)
 
 // vue3-loading-overlay元件 進行全域註冊
 app.component('LoadingOverlay', Loading)
+// vee-validate
+app.component('VForm', Form)
+app.component('VField', Field)
+app.component('ErrorMessage', ErrorMessage)
+
 app.mount('#app')

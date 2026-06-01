@@ -141,63 +141,86 @@
 
       <!-- 建立訂單 -->
       <div class="my-5 row justify-content-center">
-        <form class="col-md-6">
-          <table class="table align-middle">
-            <thead>
-              <th>品名</th>
-              <th>數量</th>
-              <th>單價</th>
-            </thead>
-            <tbody>
-              <tr>
-                <td>產品</td>
-                <td>1 / 個</td>
-                <td class="text-end">100</td>
-              </tr>
-            </tbody>
-            <tfoot>
-              <tr>
-                <td colspan="2" class="text-end">總計</td>
-                <td class="text-end">100</td>
-              </tr>
-            </tfoot>
-          </table>
-
-          <table class="table">
-            <tbody>
-              <tr>
-                <th width="100">Email</th>
-                <td>abc@gmail.com</td>
-              </tr>
-              <tr>
-                <th>姓名</th>
-                <td>AA</td>
-              </tr>
-              <tr>
-                <th>收件人電話</th>
-                <td>0987654321</td>
-              </tr>
-              <tr>
-                <th>收件人地址</th>
-                <td>Address</td>
-              </tr>
-              <tr>
-                <th>付款狀態</th>
-                <td>
-                  <span>尚未付款</span>
-                  <span class="text-success">付款完成</span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <div class="text-end">
-            <button class="btn btn-danger">確認付款去</button>
+        <VForm class="col-md-6" v-slot="{ errors }" @submit="createOrder">
+          <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <VField
+              id="email"
+              name="email"
+              type="email"
+              class="form-control"
+              :class="{ 'is-invalid': errors['email'] }"
+              placeholder="請輸入 Email"
+              rules="email|required"
+              v-model="form.user.email"
+            ></VField>
+            <ErrorMessage name="email" class="invalid-feedback"></ErrorMessage>
           </div>
-        </form>
+
+          <div class="mb-3">
+            <label for="name" class="form-label">收件人姓名</label>
+            <VField
+              id="name"
+              name="姓名"
+              type="text"
+              class="form-control"
+              :class="{ 'is-invalid': errors['姓名'] }"
+              placeholder="請輸入姓名"
+              rules="required"
+              v-model="form.user.name"
+            ></VField>
+            <ErrorMessage name="姓名" class="invalid-feedback"></ErrorMessage>
+          </div>
+
+          <div class="mb-3">
+            <label for="tel" class="form-label">收件人電話</label>
+            <VField
+              id="tel"
+              name="電話"
+              type="tel"
+              class="form-control"
+              :class="{ 'is-invalid': errors['電話'] }"
+              placeholder="請輸入電話"
+              rules="required"
+              v-model="form.user.tel"
+            ></VField>
+            <ErrorMessage name="電話" class="invalid-feedback"></ErrorMessage>
+          </div>
+
+          <div class="mb-3">
+            <label for="address" class="form-label">收件人地址</label>
+            <VField
+              id="address"
+              name="地址"
+              type="text"
+              class="form-control"
+              :class="{ 'is-invalid': errors['地址'] }"
+              placeholder="請輸入地址"
+              rules="required"
+              v-model="form.user.address"
+            ></VField>
+            <ErrorMessage name="地址" class="invalid-feedback"></ErrorMessage>
+          </div>
+
+          <div class="mb-3">
+            <label for="message" class="form-label">留言</label>
+            <textarea
+              name=""
+              id="message"
+              class="form-control"
+              cols="30"
+              rows="10"
+              v-model="form.message"
+            ></textarea>
+          </div>
+          <div class="text-end">
+            <button class="btn btn-danger">送出訂單</button>
+          </div>
+        </VForm>
       </div>
     </div>
   </div>
-
+  {{ form }}
   <PaginationView :pages="pagination" @emit-pages="getProducts"></PaginationView>
 </template>
 
@@ -216,6 +239,15 @@ export default {
       coupon_code: '',
       status: {
         loadingItem: '', //對應品項id
+      },
+      form: {
+        user: {
+          name: '',
+          email: '',
+          tel: '',
+          address: '',
+        },
+        message: '',
       },
     }
   },
@@ -343,6 +375,22 @@ export default {
           this.getCart()
         } else {
           alert('查無優惠券')
+        }
+      } catch (error) {
+        console.log(error.response)
+      } finally {
+        this.isLoading = false
+      }
+    },
+
+    async createOrder() {
+      const api = `${import.meta.env.VITE_API}api/${import.meta.env.VITE_PATH}/order`
+      const order = this.form
+      this.isLoading = true
+      try {
+        const res = await axios.post(api, { data: order })
+        if (res.data.success) {
+          console.log(res.data)
         }
       } catch (error) {
         console.log(error.response)
