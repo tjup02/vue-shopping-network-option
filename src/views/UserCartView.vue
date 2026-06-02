@@ -391,6 +391,7 @@ export default {
         const res = await axios.post(api, { data: order })
         if (res.data.success) {
           console.log(res.data)
+          this.$router.push(`/user/UserCheckout/${res.data.orderId}`)
         }
       } catch (error) {
         console.log(error.response)

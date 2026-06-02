@@ -68,6 +68,11 @@ const router = createRouter({
             return { id: route.params.id }
           },
         },
+        // 訂單確認頁
+        {
+          path: '/user/UserCheckout/:orderId',
+          component: () => import('../views/UserCheckout.vue'),
+        },
       ],
     },
   ],
