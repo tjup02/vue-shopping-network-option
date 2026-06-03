@@ -60,7 +60,7 @@
 <script>
 import axios from 'axios'
 import PaginationView from '@/components/PaginationView.vue'
-import OrderModal from '@/components/orderModal.vue'
+import OrderModal from '@/components/OrderModal.vue'
 import DelModal from '@/components/DelModal.vue'
 
 export default {
